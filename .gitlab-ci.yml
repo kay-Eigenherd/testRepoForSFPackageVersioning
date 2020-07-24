@@ -42,6 +42,6 @@ SO-creation:
         # Create scratch org
         - sfdx force:org:create --setdefaultusername --targetdevhubusername "PlaygroundDevHub" --wait 10 --durationdays 1 --setalias "PackageTestingScratchOrg" edition=developer
         # Push source to Scratch Org
-        - sfdx force:source:push --targetusername "PackageTestingScratchOrg"
+        - sfdx force:source:push --targetusername "PackageTestingScratchOrg" --forceoverwrite
         # Run all Apex tests
         - sfdx force:apex:test:run --verbose --codecoverage --resultformat human
