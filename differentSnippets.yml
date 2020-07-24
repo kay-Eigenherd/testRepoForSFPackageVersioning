@@ -65,3 +65,20 @@ SO-creation:
         - sfdx force:auth:sfdxurl:store --sfdxurlfile /tmp/sfdx.url --setalias "PlaygroundDevHub" --setdefaultdevhubusername
         # Create scratch org
         - sfdx force:org:create --setdefaultusername --targetdevhubusername "PlaygroundDevHub" --wait 10 --durationdays 1 edition=developer
+
+#sfdx force:package:create --targetdevhubusername EghGitlabCIPlayground --name "Fancy Unlocked Package" --description "A fancy  package" --packagetype Unlocked --path force-app
+
+SO-creation:
+    stage: SO-creation
+    script:
+        # Authenticate to the Dev Hub from specified Auth URL
+        - echo $PLAYGROUND_AUTH_URL > /tmp/sfdx.url
+        - sfdx force:auth:sfdxurl:store --sfdxurlfile /tmp/sfdx.url --setalias "PlaygroundDevHub" --setdefaultdevhubusername
+        # Create scratch org
+        - sfdx force:org:create --setdefaultusername --targetdevhubusername "PlaygroundDevHub" --wait 10 --durationdays 1 --setalias "PackageTestingScratchOrg" edition=developer
+        # Install package in ScratchOrg
+        - sfdx force:package:install --wait 10 --publishwait 10 --package $TEST_UNMANAGED_PCK_ID --noprompt --targetusername PackageTestingScratchOrg
+        # Run all Apex tests
+        - sfdx force:apex:test:run --verbose --codecoverage --resultformat human
+        # Delete Scratch Org
+        - sfdx force:org:delete --noprompt --targetusername PackageTestingScratchOrg
