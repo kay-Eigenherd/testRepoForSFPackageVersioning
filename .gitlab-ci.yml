@@ -40,8 +40,8 @@ code-testing:
     script:
         # Authenticate to the Dev Hub using the server key
         #- sfdx force:auth:jwt:grant --setdefaultdevhubusername --clientid $SF_CONSUMER_KEY --jwtkeyfile assets/server.key --username $SF_USERNAME
-        - echo $PLAYGROUND_AUTH_URL > (pwd)/tmp/sfdx.url
-        - sfdx force:auth:sfdxurl:store --SFDXURLFILE (pwd)/tmp/sfdx.url -- SETALIAS "Playground"
+        - echo $PLAYGROUND_AUTH_URL > /tmp/sfdx.url
+        - sfdx force:auth:sfdxurl:store --SFDXURLFILE /tmp/sfdx.url -- SETALIAS "Playground"
         # Create scratch org
         - sfdx force:org:create --setdefaultusername --wait 10 --durationdays 1 edition=developer
         #- sfdx force:org:display
