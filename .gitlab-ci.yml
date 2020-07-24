@@ -41,9 +41,9 @@ code-testing:
         # Authenticate to the Dev Hub using the server key
         #- sfdx force:auth:jwt:grant --setdefaultdevhubusername --clientid $SF_CONSUMER_KEY --jwtkeyfile assets/server.key --username $SF_USERNAME
         - echo $PLAYGROUND_AUTH_URL > /tmp/sfdx.url
-        - sfdx force:auth:sfdxurl:store --sfdxurlfile /tmp/sfdx.url --setalias "Playground"
+        - sfdx force:auth:sfdxurl:store --sfdxurlfile /tmp/sfdx.url --setalias "PlaygroundDevHub" --setdefaultusername
         # Create scratch org
-        - sfdx force:org:create --setdefaultusername --wait 10 --durationdays 1 edition=developer
+        - sfdx force:org:create --setdefaultusername --targetusername "PlaygroundDevHub" --wait 10 --durationdays 1 edition=developer
         #- sfdx force:org:display
         # Push source to scratch org (this is with source code, all files, etc)
         #- sfdx force:source:push
