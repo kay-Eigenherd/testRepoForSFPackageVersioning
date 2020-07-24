@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>FancyPackage</fullName>
+    <types>
+        <members>FancyApexClass</members>
+        <members>FancyApexClassTest</members>
+        <name>ApexClass</name>
+    </types>
+    <types>
+        <members>FancyCustomObject__c.HowFancy__c</members>
+        <name>CustomField</name>
+    </types>
+    <types>
+        <members>FancyCustomObject__c</members>
+        <name>CustomObject</name>
+    </types>
+    <types>
+        <members>FancyCustomObject__c-FancyCustomObject Layout</members>
+        <name>Layout</name>
+    </types>
+    <version>49.0</version>
+</Package>
