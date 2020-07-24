@@ -40,9 +40,10 @@ code-testing:
     script:
         # Authenticate to the Dev Hub using the server key
         #- sfdx force:auth:jwt:grant --setdefaultdevhubusername --clientid $SF_CONSUMER_KEY --jwtkeyfile assets/server.key --username $SF_USERNAME
-        - authenticate SCRATCHORG $PLAYGROUND_AUTH_URL
+        - echo $PLAYGROUND_AUTH_URL > /tmp/sfdx.url
+        - sfdx force:auth:sfdxurl:store --sfdxurlfile /tmp/sfdx.url --setalias "PlaygroundDevHub" --setdefaultdevhubusername
         # Create scratch org
-        - sfdx force:org:create --setdefaultusername --wait 10 --durationdays 1 edition=developer
+        - sfdx force:org:create --setdefaultusername --targetdevhubusername "PlaygroundDevHub" --wait 10 --durationdays 1 edition=developer
         #- sfdx force:org:display
         # Push source to scratch org (this is with source code, all files, etc)
         #- sfdx force:source:push
@@ -54,26 +55,13 @@ code-testing:
         #- sfdx force:apex:test:run --wait 10 --resultformat human --codecoverage --testlevel RunLocalTests
         # Delete Scratch Org
         #- sfdx force:org:delete --noprompt
+        - sfdx force:package:install --wait 10 --publishwait 10 --package package-name@1.0.0-1 -k INSTALLATION_KEY -r -u ALIAS_OF_ORG
 
-
-  # Function to authenticate to Salesforce.
-  # Don't expose the auth url to the logs.
-  # Arguments:
-  #     $1 = alias to set
-  #     $2 = Sfdx Auth URL
-  #     $3 = SFDX AUth URL to use if the previous one isn't set (optional)
-  function authenticate() {
-    local alias_to_set=$1
-    local org_auth_url=$2
-    local org_auth_url_backup=$3
-
-    local file=$(mktemp)
-    echo $org_auth_url > $file
-    local cmd="sfdx force:auth:sfdxurl:store --sfdxurlfile $file --setalias $alias_to_set --json" && (echo $cmd >&2)
-    local output=$($cmd)
-
-    sfdx force:config:set defaultusername=$alias_to_set
-    sfdx force:config:set defaultdevhubusername=$alias_to_set
-
-    rm $file
-  }
+SO-creation:
+    stage: SO-creation
+    script:
+        # Authenticate to the Dev Hub from specified Auth URL
+        - echo $PLAYGROUND_AUTH_URL > /tmp/sfdx.url
+        - sfdx force:auth:sfdxurl:store --sfdxurlfile /tmp/sfdx.url --setalias "PlaygroundDevHub" --setdefaultdevhubusername
+        # Create scratch org
+        - sfdx force:org:create --setdefaultusername --targetdevhubusername "PlaygroundDevHub" --wait 10 --durationdays 1 edition=developer

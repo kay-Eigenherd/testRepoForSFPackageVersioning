@@ -31,27 +31,17 @@ before_script:
 # Define the stages of our pipeline
 #
 stages:
-    - code-testing
-#
-# Stage 1 -- Create a scratch org for code testing
-#
-code-testing:
-    stage: code-testing
+    - SO-creation
+
+SO-creation:
+    stage: SO-creation
     script:
-        # Authenticate to the Dev Hub using the server key
-        #- sfdx force:auth:jwt:grant --setdefaultdevhubusername --clientid $SF_CONSUMER_KEY --jwtkeyfile assets/server.key --username $SF_USERNAME
+        # Authenticate to the Dev Hub from specified Auth URL
         - echo $PLAYGROUND_AUTH_URL > /tmp/sfdx.url
         - sfdx force:auth:sfdxurl:store --sfdxurlfile /tmp/sfdx.url --setalias "PlaygroundDevHub" --setdefaultdevhubusername
         # Create scratch org
-        - sfdx force:org:create --setdefaultusername --targetdevhubusername "PlaygroundDevHub" --wait 10 --durationdays 1 edition=developer
-        #- sfdx force:org:display
-        # Push source to scratch org (this is with source code, all files, etc)
-        #- sfdx force:source:push
-        # Assign DreamHouse permission set to scratch org default user
-        #- sfdx force:user:permset:assign --permsetname DreamHouse
-        # Add sample data into app
-        #- sfdx force:data:tree:import --plan data/sample-data-plan.json
-        # Unit Testing
-        #- sfdx force:apex:test:run --wait 10 --resultformat human --codecoverage --testlevel RunLocalTests
-        # Delete Scratch Org
-        #- sfdx force:org:delete --noprompt
+        - sfdx force:org:create --setdefaultusername --targetdevhubusername "PlaygroundDevHub" --wait 10 --durationdays 1 --setalias "PackageTestingScratchOrg" edition=developer
+        # Install package in ScratchOrg
+        - sfdx force:package:install --wait 10 --publishwait 10 --package $TEST_UNMANAGED_PCK_ID --noprompt --targetusername "PackageTestingScratchOrg"
+        # Run all Apex tests
+        - sfdx force:apex:test:run
