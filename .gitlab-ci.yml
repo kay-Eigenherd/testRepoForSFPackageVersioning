@@ -45,3 +45,5 @@ SO-creation:
         - sfdx force:package:install --wait 10 --publishwait 10 --package $TEST_UNMANAGED_PCK_ID --noprompt --targetusername PackageTestingScratchOrg
         # Run all Apex tests
         - sfdx force:apex:test:run --verbose --codecoverage --resultformat human
+        # Delete Scratch Org
+        - sfdx force:org:delete --noprompt --targetusername PackageTestingScratchOrg
