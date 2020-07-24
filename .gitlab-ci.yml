@@ -42,6 +42,6 @@ SO-creation:
         # Create scratch org
         - sfdx force:org:create --setdefaultusername --targetdevhubusername "PlaygroundDevHub" --wait 10 --durationdays 1 --setalias "PackageTestingScratchOrg" edition=developer
         # Install package in ScratchOrg
-        - sfdx force:package:install --wait 10 --publishwait 10 --package $TEST_UNMANAGED_PCK_ID --noprompt --targetusername "PackageTestingScratchOrg"
+        - sfdx force:package:install --wait 10 --publishwait 10 --package $TEST_UNMANAGED_PCK_ID --noprompt --targetusername PackageTestingScratchOrg
         # Run all Apex tests
         - sfdx force:apex:test:run
