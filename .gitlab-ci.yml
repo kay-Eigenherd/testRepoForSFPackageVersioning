@@ -45,6 +45,7 @@ SO-testing:
         - sfdx force:source:push --targetusername CodeTestingScratchOrg
         # Run all Apex tests
         - sfdx force:apex:test:run --verbose --codecoverage --resultformat human
+    after_script:
         # Delete Scratch Org
         - sfdx force:org:delete --noprompt --targetusername CodeTestingScratchOrg
 
@@ -91,6 +92,7 @@ Package-Installation-testing:
         - sfdx force:package:install --wait 10 --publishwait 10 --package $PACKAGE_VERSION_ID --noprompt --targetusername PackageInstallationTestingScratchOrg
         # Run all Apex tests
         - sfdx force:apex:test:run --verbose --codecoverage --resultformat human
+    after_script:
         # Delete Scratch Org
         - sfdx force:org:delete --noprompt --targetusername PackageInstallationTestingScratchOrg
 
