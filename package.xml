@@ -10,10 +10,12 @@
         <members>FancyApexClassTest</members>
         <name>ApexClass</name>
     </types>
+    <!--
     <types>
         <members>FancyCustomObject__c.HowFancy__c</members>
         <name>CustomField</name>
     </types>
+    -->
     <types>
         <members>FancyCustomObject__c-FancyCustomObject Layout</members>
         <name>Layout</name>
