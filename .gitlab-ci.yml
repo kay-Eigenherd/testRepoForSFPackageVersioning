@@ -47,7 +47,7 @@ Package-versioning:
         - sfdx force:source:deploy --targetusername DevHub --manifest package.xml
         - echo $PACKAGE_NAME
         # Create packaged version
-        - echo (eval sfdx force:package:version:create --package "$PACKAGE_NAME" --installationkeybypass --targetdevhubusername DevHub --wait 10 --json | jq -r '.result.SubscriberPackageVersionId') 
+        - sfdx force:package:version:create --package "$PACKAGE_NAME" --installationkeybypass --targetdevhubusername DevHub --wait 10 --json
         #- export PACKAGE_VERSION_ID="$(eval sfdx force:package:version:create --package "$PACKAGE_NAME" --installationkeybypass --targetdevhubusername DevHub --wait 10 --json | jq -r '.result.SubscriberPackageVersionId')"
         # TODO: build in fail on retrieved value == null
         - if [ -z $PACKAGE_VERSION_ID]; then exit(1); fi
