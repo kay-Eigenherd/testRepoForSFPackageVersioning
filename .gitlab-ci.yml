@@ -32,6 +32,8 @@ before_script:
 #
 stages:
     - Package-versioning
+    - Package-Installation-testing
+    - Package-promotion
 
 # The Trailhead provided yml created a new package version within a Scratch Org. We should consider wheather the package should
 # be built from the DevHub or a Scratch Org
