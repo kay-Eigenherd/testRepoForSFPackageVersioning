@@ -31,9 +31,23 @@ before_script:
 # Define the stages of our pipeline
 #
 stages:
+    - SO-testing
     - Package-versioning
     - Package-Installation-testing
     - Package-promotion
+
+SO-testing:
+    stage: SO-testing
+    script:
+        # Create scratch org
+        - sfdx force:org:create --setdefaultusername --targetdevhubusername DevHub --wait 10 --durationdays 1 --setalias "CodeTestingScratchOrg" edition=developer
+        # Push source to Scratch Org
+        - sfdx force:source:push --targetusername CodeTestingScratchOrg
+        # Run all Apex tests
+        - sfdx force:apex:test:run --verbose --codecoverage --resultformat human
+    after_script:
+        # Delete Scratch Org
+        - sfdx force:org:delete --noprompt --targetusername CodeTestingScratchOrg
 
 # The Trailhead provided yml created a new package version within a Scratch Org. We should consider wheather the package should
 # be built from the DevHub or a Scratch Org
@@ -47,7 +61,6 @@ Package-versioning:
         - sfdx force:source:deploy --targetusername DevHub --manifest package.xml
         - echo $PACKAGE_NAME
         # Create packaged version
-        #- (sfdx force:package:version:create --package "$PACKAGE_NAME" --installationkeybypass --targetdevhubusername DevHub --wait 10 --json | jq -r '.result.SubscriberPackageVersionId')
         - export PACKAGE_VERSION_ID="$(sfdx force:package:version:create --package "$PACKAGE_NAME" --installationkeybypass --targetdevhubusername DevHub --wait 10 --json | jq -r '.result.SubscriberPackageVersionId')"
         # TODO: build in fail on retrieved value == null
         # Save your PACKAGE_VERSION_ID to a file for later use during deploy so you know what version to deploy
@@ -56,7 +69,6 @@ Package-versioning:
 
 Package-Installation-testing:
     stage: Package-Installation-testing
-    when: manual
     script:
         # Read the package version id from file created in prior stage
         - export PACKAGE_VERSION_ID=`cat ./PACKAGE_VERSION_ID.TXT`
@@ -80,4 +92,4 @@ Package-promotion:
         - export PACKAGE_VERSION_ID=`cat ./PACKAGE_VERSION_ID.TXT`
         - echo $PACKAGE_VERSION_ID
         # promote package out of beta status
-        - sfdx force:package:version:promote --package $PACKAGE_VERSION_ID --targetdevhubusername DevHub
+        - sfdx force:package:version:promote --package $PACKAGE_VERSION_ID --targetdevhubusername DevHub --noprompt --json
