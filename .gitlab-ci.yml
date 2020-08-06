@@ -35,19 +35,6 @@ stages:
     - Package-Installation-testing
     - Package-promotion
 
-SO-testing:
-    stage: SO-testing
-    script:
-        # Create scratch org
-        - sfdx force:org:create --setdefaultusername --targetdevhubusername DevHub --wait 10 --durationdays 1 --setalias "CodeTestingScratchOrg" edition=developer
-        # Push source to Scratch Org
-        - sfdx force:source:push --targetusername CodeTestingScratchOrg
-        # Run all Apex tests
-        - sfdx force:apex:test:run --verbose --codecoverage --resultformat human
-    after_script:
-        # Delete Scratch Org
-        - sfdx force:org:delete --noprompt --targetusername CodeTestingScratchOrg
-
 # The Trailhead provided yml created a new package version within a Scratch Org. We should consider wheather the package should
 # be built from the DevHub or a Scratch Org
 Package-versioning:
