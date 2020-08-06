@@ -45,8 +45,10 @@ Package-versioning:
     script:
         # Deploy source to DevHub
         - sfdx force:source:deploy --targetusername DevHub --manifest package.xml
+        - echo $PACKAGE_NAME
         # Create packaged version
-        - export PACKAGE_VERSION_ID="$(eval sfdx force:package:version:create --package $PACKAGE_NAME  --installationkeybypass --targetusername DevHub --wait 10 --json | jq -r '.result.SubscriberPackageVersionId')"
+        - export PACKAGE_VERSION_ID="$(eval sfdx force:package:version:create --package $PACKAGE_NAME  --installationkeybypass --targetdevhubusername DevHub --wait 10 --json | jq -r '.result.SubscriberPackageVersionId')"
+        # TODO: build in fail on retrieved value == null
         # Save your PACKAGE_VERSION_ID to a file for later use during deploy so you know what version to deploy
         - echo "$PACKAGE_VERSION_ID" > PACKAGE_VERSION_ID.TXT
         - echo $PACKAGE_VERSION_ID

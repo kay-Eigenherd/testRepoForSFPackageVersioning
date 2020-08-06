@@ -12,6 +12,7 @@
     "sfdcLoginUrl": "https://login.salesforce.com",
     "sourceApiVersion": "48.0",
     "packageAliases": {
-        "Fancy Unlocked Package": "0Ho2X000000XZDzSAO"
+        "Fancy Unlocked Package": "0Ho2X000000XZDzSAO",
+        "Fancy Unlocked Package@0.1.0-1": "04t2X000001ZHPWQA4"
     }
 }
