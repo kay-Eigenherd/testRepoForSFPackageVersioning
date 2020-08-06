@@ -31,6 +31,7 @@ before_script:
 # Define the stages of our pipeline
 #
 stages:
+    - SO-testing
     - Package-versioning
     - Package-Installation-testing
     - Package-promotion
@@ -58,8 +59,23 @@ Package-versioning:
     script:
         # Deploy source to DevHub
         - sfdx force:source:deploy --targetusername DevHub --manifest package.xml
+        # Increment package version number (taken from the yml file provided through trailhead)
+        - echo $PACKAGE_NAME
+        - PACKAGE_VERSION_JSON="$(eval sfdx force:package:version:list --concise --released --packages $PACKAGE_NAME --json | jq '.result | sort_by(-.MajorVersion, -.MinorVersion, -.PatchVersion, -.BuildNumber) | .[0] // ""')"
+        - echo $PACKAGE_VERSION_JSON
+        - IS_RELEASED=$(jq -r '.IsReleased?' <<< $PACKAGE_VERSION_JSON)
+        - MAJOR_VERSION=$(jq -r '.MajorVersion?' <<< $PACKAGE_VERSION_JSON)
+        - MINOR_VERSION=$(jq -r '.MinorVersion?' <<< $PACKAGE_VERSION_JSON)
+        - PATCH_VERSION=$(jq -r '.PatchVersion?' <<< $PACKAGE_VERSION_JSON)
+        - BUILD_VERSION="NEXT"
+        - if [ -z $MAJOR_VERSION ]; then MAJOR_VERSION=1; fi;
+        - if [ -z $MINOR_VERSION ]; then MINOR_VERSION=0; fi;
+        - if [ -z $PATCH_VERSION ]; then PATCH_VERSION=0; fi;
+        - if [ "$IS_RELEASED" == "true" ]; then MINOR_VERSION=$(($MINOR_VERSION+1)); fi;
+        - VERSION_NUMBER="$MAJOR_VERSION.$MINOR_VERSION.$PATCH_VERSION.$BUILD_VERSION"
+        - echo $VERSION_NUMBER
         # Create packaged version
-        - export PACKAGE_VERSION_ID="$(eval sfdx force:package:version:create --package $PACKAGE_NAME  --installationkeybypass --targetusername DevHub --wait 10 --json | jq -r '.result.SubscriberPackageVersionId')"
+        - export PACKAGE_VERSION_ID="$(eval sfdx force:package:version:create --package $PACKAGE_NAME --versionnumber $VERSION_NUMBER --installationkeybypass --wait 10 --json | jq -r '.result.SubscriberPackageVersionId')"
         # Save your PACKAGE_VERSION_ID to a file for later use during deploy so you know what version to deploy
         - echo "$PACKAGE_VERSION_ID" > PACKAGE_VERSION_ID.TXT
         - echo $PACKAGE_VERSION_ID
