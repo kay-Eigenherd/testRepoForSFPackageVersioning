@@ -1,6 +1,9 @@
 # General information
 This repo is for testing purposes! The package in here has been created for testing purposes.  
-**Currently it is not running**, because of a problem with the metadata deployment causing the error "Must specify a non-empty label for the CustomObject", which seems to be a bug from SF, see also [here](https://salesforce.stackexchange.com/questions/194509/how-to-push-fields-on-packaged-objects-with-sfdx).  
+
+It should be noted, that the user, which authenticates will also be "responsible" for all actions of the CI and will also receive email notifications on installation of the package.  
+
+Also a quick note, that the version does not get updated in the sfdx-project.json. I am working to create a better overview.
 
 # Setting the CI up
 I have created a Trailhead Playground for testing with CI.  
@@ -16,10 +19,10 @@ Pw: Hallo2020!
 
 ## Creating a package
 The CI can currently only create new package versions and promote them(job needs to be started manually).  
-It can, however not create a package itself. So it requires that the initial package creation command is performed manually on a local machine.
+It can, however **not create a package** itself. So it requires, that the initial package creation command is performed manually on a local machine.
   
 # Considerations
-It should be noted, that Playgrounds only allow for the creation of 10 ScratsOrgs per day. The limit for the EghProd is at **80/day**  
+It should be noted, that Playgrounds only allow for the creation of 10 ScratsOrgs per day. The limit for the **EghProd is at 80/day**  
 When using two Scratch Orgs(testing, package installation testing) per pipeline this is not much.
 This could be reduced by running the tests straight within the specified Org, but again this code could lead to problems down the road.
 
