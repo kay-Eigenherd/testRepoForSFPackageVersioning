@@ -32,8 +32,6 @@ before_script:
 #
 stages:
     - Package-versioning
-    - Package-Installation-testing
-    - Package-promotion
 
 # The Trailhead provided yml created a new package version within a Scratch Org. We should consider wheather the package should
 # be built from the DevHub or a Scratch Org
@@ -47,35 +45,9 @@ Package-versioning:
         - sfdx force:source:deploy --targetusername DevHub --manifest package.xml
         - echo $PACKAGE_NAME
         # Create packaged version
-        - export PACKAGE_VERSION_ID="$(eval sfdx force:package:version:create --package $PACKAGE_NAME  --installationkeybypass --targetdevhubusername DevHub --wait 10 --json | jq -r '.result.SubscriberPackageVersionId')"
+        #- export PACKAGE_VERSION_ID="$(eval sfdx force:package:version:create --package $PACKAGE_NAME  --installationkeybypass --targetdevhubusername DevHub --wait 10 --json | jq -r '.result.SubscriberPackageVersionId')"
+        - sfdx force:package:version:create --package $PACKAGE_NAME  --installationkeybypass --targetdevhubusername DevHub --wait 10 --json
         # TODO: build in fail on retrieved value == null
         # Save your PACKAGE_VERSION_ID to a file for later use during deploy so you know what version to deploy
         - echo "$PACKAGE_VERSION_ID" > PACKAGE_VERSION_ID.TXT
         - echo $PACKAGE_VERSION_ID
-       
-Package-Installation-testing:
-    stage: Package-Installation-testing
-    script:
-        # Read the package version id from file created in prior stage
-        - export PACKAGE_VERSION_ID=`cat ./PACKAGE_VERSION_ID.TXT`
-        - echo $PACKAGE_VERSION_ID
-        # Create scratch org
-        - sfdx force:org:create --setdefaultusername --targetdevhubusername DevHub --wait 10 --durationdays 1 --setalias "PackageInstallationTestingScratchOrg" edition=developer
-        # install package in SO through ID
-        - sfdx force:package:install --wait 10 --publishwait 10 --package $PACKAGE_VERSION_ID --noprompt --targetusername PackageInstallationTestingScratchOrg
-        # Run all Apex tests
-        - sfdx force:apex:test:run --verbose --codecoverage --resultformat human
-    after_script:
-        # Delete Scratch Org
-        - sfdx force:org:delete --noprompt --targetusername PackageInstallationTestingScratchOrg
-
-Package-promotion:
-    stage: Package-promotion
-    # Will only promote the package if manually run
-    when: manual
-    script:
-        # Read the package version id from file created in prior stage
-        - export PACKAGE_VERSION_ID=`cat ./PACKAGE_VERSION_ID.TXT`
-        - echo $PACKAGE_VERSION_ID
-        # promote package out of beta status
-        - sfdx force:package:version:promote --package $PACKAGE_VERSION_ID --targetdevhubusername DevHub
