@@ -1,11 +1,14 @@
 # General information
 This repo is for testing purposes! The package in here has been created for testing purposes.  
 
-It should be noted, that the user, which authenticates will also be "responsible" for all actions of the CI and will also receive email notifications on installation of the package.  
+It should be noted, that the user, which authenticates will also be "responsible" for all actions of the CI and will also receive email notifications on installation of the package. This is because the Auth URL is linked to the account, which has been authenticated through the web sign-in. 
 
-Also a quick note, that the version does not get updated in the sfdx-project.json. I am working to create a better overview.
+### ToDo  
+- [ ] Also a quick note, that the version does not get updated in the sfdx-project.json. I am working to create a better overview.  
+- [ ] Repo-variable for an installation key. This way it is safer.
 
-# Setting the CI up
+# Setup
+## Setting the CI up
 I have created a Trailhead Playground for testing with CI.  
 Login link: https://playful-moose-suoor6-dev-ed.my.salesforce.com/  
 Username: kay.jenss@playful-moose-suoor6.com  
