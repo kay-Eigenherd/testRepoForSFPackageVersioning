@@ -39,6 +39,9 @@ stages:
 SO-testing:
     stage: SO-testing
     script:
+        # TODO: Check SO limits
+        - export NMBR_OF_AVAILABLE_SCRATCHORGS="$(sfdx force:limits:api:display --json | jq -r '.result[] | select(.name == "DailyScratchOrgs").remaining')"
+        - echo $NMBR_OF_AVAILABLE_SCRATCHORGS
         # Create scratch org
         - sfdx force:org:create --setdefaultusername --targetdevhubusername DevHub --wait 10 --durationdays 1 --setalias "CodeTestingScratchOrg" edition=developer
         # Push source to Scratch Org
@@ -61,7 +64,8 @@ Package-versioning:
         - sfdx force:source:deploy --targetusername DevHub --manifest package.xml
         - echo $PACKAGE_NAME
         # Create packaged version
-        - export PACKAGE_VERSION_ID="$(sfdx force:package:version:create --package "$PACKAGE_NAME" --installationkeybypass --targetdevhubusername DevHub --wait 10 --json | jq -r '.result.SubscriberPackageVersionId')"
+        - export PACKAGE_VERSION_ID="$(sfdx force:package:version:create --package "$PACKAGE_NAME" --installationkey "$PACKAGE_INSTALLATION_KEY" --targetdevhubusername DevHub --wait 10 --json | jq -r '.result.SubscriberPackageVersionId')"
+        #- export PACKAGE_VERSION_ID="$(sfdx force:package:version:create --package "$PACKAGE_NAME" --installationkeybypass --targetdevhubusername DevHub --wait 10 --json | jq -r '.result.SubscriberPackageVersionId')"
         # TODO: build in fail on retrieved value == null
         # Save your PACKAGE_VERSION_ID to a file for later use during deploy so you know what version to deploy
         - echo "$PACKAGE_VERSION_ID" > PACKAGE_VERSION_ID.TXT
@@ -69,13 +73,16 @@ Package-versioning:
 
 Package-Installation-testing:
     stage: Package-Installation-testing
+    when: manual
     script:
         # Read the package version id from file created in prior stage
         - export PACKAGE_VERSION_ID=`cat ./PACKAGE_VERSION_ID.TXT`
         - echo $PACKAGE_VERSION_ID
+        # TODO: Check SO limits
         # Create scratch org
         - sfdx force:org:create --setdefaultusername --targetdevhubusername DevHub --wait 10 --durationdays 1 --setalias "PackageInstallationTestingScratchOrg" edition=developer
         # install package in SO through ID
+        # TODO: disable Email notification attribute?
         - sfdx force:package:install --wait 10 --publishwait 10 --package $PACKAGE_VERSION_ID --noprompt --targetusername PackageInstallationTestingScratchOrg
         # Run all Apex tests
         - sfdx force:apex:test:run --verbose --codecoverage --resultformat human
