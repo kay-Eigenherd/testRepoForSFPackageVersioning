@@ -5,7 +5,7 @@ It should be noted, that the user, which authenticates will also be "responsible
 
 ### ToDo  
 - [ ] Also a quick note, that the version does not get updated in the sfdx-project.json. I am working to create a better overview.  
-- [ ] Repo-variable for an installation key. This way it is safer.
+- [X] Repo-variable for an installation key. This way it is safer.
 
 # Setup
 ## Setting the CI up
