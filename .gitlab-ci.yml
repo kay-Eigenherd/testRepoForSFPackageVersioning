@@ -40,8 +40,8 @@ SO-testing:
     stage: SO-testing
     script:
         # TODO: Check SO limits
-        - export NMBR_OF_AVAILABLE_SCRATCHORGS="$(sfdx force:limits:api:display --json | jq -r '.result[] | select(.name == "DailyScratchOrgs").remaining')"
-        - echo $NMBR_OF_AVAILABLE_SCRATCHORGS
+        - export NMBR_OF_AVAILABLE_SCRATCHORGS="$(sfdx force:limits:api:display --json | jq -r '.result[]? | select(.name == "DailyScratchOrgs").remaining')"
+        - echo "$NMBR_OF_AVAILABLE_SCRATCHORGS"
         # Create scratch org
         - sfdx force:org:create --setdefaultusername --targetdevhubusername DevHub --wait 10 --durationdays 1 --setalias "CodeTestingScratchOrg" edition=developer
         # Push source to Scratch Org
