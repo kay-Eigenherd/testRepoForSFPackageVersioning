@@ -41,7 +41,9 @@ jobs:
         run: |
           cd testResults
           ls
+          echo " --- Testresults following KEJ --- "
           cat test-result.txt
+          echo " --- Testcodecoverage following KEJ --- "
           cat test-result-codecoverage.json
       #CleanUp, delete ScratchOrg
       - name: 'Delete ScratchOrg'
