@@ -40,11 +40,8 @@ jobs:
       - name: 'List testresult files'
         run: |
           cd testResults
-          ls
-          echo " --- Testresults following KEJ --- "
           cat test-result.txt
-          echo " --- Testcodecoverage following KEJ --- "
-          cat test-result-codecoverage.json
+          echo grep "Pass Rate" results.txt | rev | cut -d " " -f1 | rev
       #CleanUp, delete ScratchOrg
       - name: 'Delete ScratchOrg'
         uses: forcedotcom/salesforcedx-actions@master
