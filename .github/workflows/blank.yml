@@ -30,7 +30,7 @@ jobs:
       - name: 'Push source to ScratchOrg'
         uses: forcedotcom/salesforcedx-actions@master
         with:
-          args: 'force:source:push -u '
+          args: 'force:source:push -u ScratchOrg'
       - name: 'Run all tests in ScratchOrg'
         uses: forcedotcom/salesforcedx-actions@master
         with:
