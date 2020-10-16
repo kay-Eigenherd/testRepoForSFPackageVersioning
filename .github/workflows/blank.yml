@@ -41,6 +41,8 @@ jobs:
         run: |
           cd testResults
           ls
+          cat test-result.txt
+          cat test-result-codecoverage.json
       #CleanUp, delete ScratchOrg
       - name: 'Delete ScratchOrg'
         uses: forcedotcom/salesforcedx-actions@master
