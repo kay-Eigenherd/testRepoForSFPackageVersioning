@@ -31,10 +31,16 @@ jobs:
         uses: forcedotcom/salesforcedx-actions@master
         with:
           args: 'force:source:push -u ScratchOrg'
+      - name: 'Create folder for test results'
+        run: mkdir testResults
       - name: 'Run all tests in ScratchOrg'
         uses: forcedotcom/salesforcedx-actions@master
         with:
-          args: 'force:apex:test:run --verbose --codecoverage --resultformat human'
+          args: 'force:apex:test:run --verbose --codecoverage --resultformat human -d ./testResults/'
+      - name: 'List testresult files'
+        run: |
+          cd testResults
+          ls
       #CleanUp, delete ScratchOrg
       - name: 'Delete ScratchOrg'
         uses: forcedotcom/salesforcedx-actions@master
