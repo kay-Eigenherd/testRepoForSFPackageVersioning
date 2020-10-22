@@ -3,8 +3,9 @@ name: CI
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
 on:
-  push:
-    branches: [ master ]
+  #push:
+    #branches: [ master ]
+  workflow_dispatch:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -15,33 +16,26 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - name: 'Populate auth file with SFDX_URL secret'
-        shell: bash
-        run: 'echo ${{ secrets.ADDITIONAL_AUTH_URL}} > ./SFDX_URL_STORE.txt'
-      - name: 'Authenticate against dev hub'
-        uses: forcedotcom/salesforcedx-actions@master
-        with:
-          args: 'force:auth:sfdxurl:store --sfdxurlfile=./SFDX_URL_STORE.txt --setalias=DevHub --setdefaultdevhubusername'
-      - name: 'Create scratch org'
-        uses: forcedotcom/salesforcedx-actions@master
-        with:
-          args: 'force:org:create --setalias=ScratchOrg --setdefaultusername --targetdevhubusername DevHub --durationdays 1 edition=developer'
+      - name: Install Salesforce CLI
+        run: |
+          apt update && apt -y install jq
+          wget https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz
+          mkdir sfdx-cli
+          tar xJf sfdx-linux-amd64.tar.xz -C sfdx-cli --strip-components 1
+          ./sfdx-cli/install
+      - name: Authenticate DevHub
+        run: |
+          echo ${{ secrets.PLAYGROUND_AUTH_URL }} > /tmp/sfdx.url
+          sfdx force:auth:sfdxurl:store --sfdxurlfile /tmp/sfdx.url --setalias "DevHub" --setdefaultdevhubusername
+      - name: create ScratchOrg
+        run: sfdx force:org:create --setdefaultusername --targetdevhubusername DevHub --wait 10 --durationdays 1 --setalias ScratchOrg edition=developer
       - uses: actions/checkout@v2
       - name: 'Push source to ScratchOrg'
-        uses: forcedotcom/salesforcedx-actions@master
-        with:
-          args: 'force:source:push -u ScratchOrg'
-      - name: 'Create folder for test results'
-        run: mkdir testResults
+        run: sfdx force:source:push --targetusername ScratchOrg
       - name: 'Run all tests in ScratchOrg'
-        uses: forcedotcom/salesforcedx-actions@master
-        with:
-          args: 'force:apex:test:run --verbose --codecoverage --resultformat human -d ./testResults/'
-      - name: 'List testresult files'
-        run: |
-          cd testResults
-          cat test-result.txt
-          echo grep "Pass Rate" results.txt | rev | cut -d " " -f1 | rev
+        run: sfdx force:apex:test:run --verbose --codecoverage --resultformat human --targetusername ScratchOrg
+      - name: Create new Package Version
+        run: export PACKAGE_VERSION_ID="$(sfdx force:package:version:create --package "$PACKAGE_NAME" --installationkey "$PACKAGE_INSTALLATION_KEY" --targetdevhubusername DevHub --wait 10 --json | jq -r '.result.SubscriberPackageVersionId')"
       #CleanUp, delete ScratchOrg
       - name: 'Delete ScratchOrg'
         uses: forcedotcom/salesforcedx-actions@master
