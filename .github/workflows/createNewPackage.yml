@@ -38,4 +38,4 @@ jobs:
       with:
         github_token: ${{ secrets.KEJ_TOKEN }}
         branch: 'master'
-        repository: '${{ github.event.inputs.name }}'
+        repository: 'kay-Eigenherd/${{ github.event.inputs.name }}'
