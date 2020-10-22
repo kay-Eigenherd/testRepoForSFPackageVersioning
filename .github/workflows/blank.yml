@@ -46,7 +46,7 @@ jobs:
         uses: Automattic/action-commit-to-branch@master
         with:
             branch: ${{ github.head_ref }}
-            commit_message: 'Added new package version ID'
+            commit_message: 'Added new package version ID from GitHub workflow'
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       #CleanUp, delete ScratchOrg
