@@ -31,7 +31,7 @@ jobs:
     - name: commit and push to new repo
       run: | #also change to organization
         git config --global credential.helper store
-        ps: Set-Content -Path "$HOME\.git-credentials" -Value "https://$($env:access_token):x-oauth-basic@github.com`n" -NoNewline
+        ps: Set-Content -Path "$HOME\.git-credentials" -Value "https://${{ secrets.KEJ_TOKEN }}:x-oauth-basic@github.com`n" -NoNewline
         git config --global user.email "kay.jenss@eigenherd.com"
         git config --global user.name "kay-Eigenherd"
         git init
