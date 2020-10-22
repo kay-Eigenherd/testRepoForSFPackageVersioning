@@ -26,7 +26,7 @@ jobs:
       - name: Authenticate DevHub
         run: |
           echo ${{ secrets.PLAYGROUND_AUTH_URL }} > /tmp/sfdx.url
-          sfdx force:auth:sfdxurl:store --sfdxurlfile /tmp/sfdx.url --setalias "DevHub" --setdefaultdevhubusername
+          sfdx force:auth:sfdxurl:store --sfdxurlfile /tmp/sfdx.url --setalias DevHub --setdefaultdevhubusername
       - name: create ScratchOrg
         run: sfdx force:org:create --setdefaultusername --targetdevhubusername DevHub --wait 10 --durationdays 1 --setalias ScratchOrg edition=developer
       - uses: actions/checkout@v2
@@ -35,7 +35,7 @@ jobs:
       - name: 'Run all tests in ScratchOrg'
         run: sfdx force:apex:test:run --verbose --codecoverage --resultformat human --targetusername ScratchOrg
       - name: Create new Package Version
-        run: sfdx force:package:version:create --package "$PACKAGE_NAME" --installationkey "$PACKAGE_INSTALLATION_KEY" --targetdevhubusername DevHub --wait 10 --json
+        run: sfdx force:package:version:create --package "${{ secrets.PACKAGE_NAME }}" --installationkey "${{ secrets.PACKAGE_INSTALLATION_KEY }}" --targetdevhubusername DevHub --wait 10 --json
       # Update sfdx-project.json and README to use only latest package version
       #- name: 'Update sfdx-project.json and README'
         #id: packaging-updater
@@ -51,6 +51,4 @@ jobs:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       #CleanUp, delete ScratchOrg
       - name: 'Delete ScratchOrg'
-        uses: forcedotcom/salesforcedx-actions@master
-        with:
-          args: 'force:org:delete --noprompt --targetusername ScratchOrg'
+        run: sfdx force:org:delete --noprompt --targetusername ScratchOrg
