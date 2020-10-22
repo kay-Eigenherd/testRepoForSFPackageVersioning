@@ -11,7 +11,7 @@ on:
         description: 'Id of the unlocked Package'
         default: '04t5I000001iufk'
         required: true
-#gh access key: 3293c5ab5aa54835443132d2bdd6c186a24fcb58
+
 jobs:
   job1:
     runs-on: ubuntu-latest
@@ -28,3 +28,14 @@ jobs:
         mkdir folderToPushToDifferentRepo
         cd folderToPushToDifferentRepo
         echo "# Test" > README.md
+    - name: commit and push to new repo
+      run: | #also change to organization
+        git config --global credential.helper store
+        ps: Set-Content -Path "$HOME\.git-credentials" -Value "https://$($env:access_token):x-oauth-basic@github.com`n" -NoNewline
+        git config --global user.email "kay.jenss@eigenherd.com"
+        git config --global user.name "kay-Eigenherd"
+        git init
+        git add .
+        git commit -m "generated"
+        git remote add origin https://github.com/kay-Eigenherd/${{ github.event.inputs.name }}.git 
+        git push
