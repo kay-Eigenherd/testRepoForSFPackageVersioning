@@ -1,0 +1,30 @@
+name: Manual workflow to create unlocked package from unmanaged package Id
+
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: 'Repo Name'
+        default: 'NewRepo'
+        required: true
+      packageId:
+        description: 'Id of the unlocked Package'
+        default: '04t5I000001iufk'
+        required: true
+
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Create a new repo for the package
+      run: hub create '${{ github.event.inputs.name }}' --description 'This is a automatically generated repo' #'testOrganization/${{ github.event.inputs.name }}' for creating a organization repo
+      env:
+        GITHUB_USER: ${{ secrets.USER_NAME }}
+        GITHUB_TOKEN: ${{ secrets.KEJ_TOKEN }}
+    - name: create file to push to new repo
+      run: |
+        mkdir folderToPushToDifferentRepo
+        cd folderToPushToDifferentRepo
+        echo "# Test" > README.md
