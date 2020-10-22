@@ -11,7 +11,7 @@ on:
         description: 'Id of the unlocked Package'
         default: '04t5I000001iufk'
         required: true
-
+#gh access key: 9ccb32fe6d041b2e2d0b25223f32acba5f9f6546
 jobs:
   job1:
     runs-on: ubuntu-latest
@@ -21,7 +21,7 @@ jobs:
     - name: Create a new repo for the package
       run: hub create '${{ github.event.inputs.name }}' --description 'This is a automatically generated repo' #'testOrganization/${{ github.event.inputs.name }}' for creating a organization repo
       env:
-        GITHUB_USER: ${{ secrets.USER_NAME }}
+        GITHUB_USER: 'kay-Eigenherd'
         GITHUB_TOKEN: ${{ secrets.KEJ_TOKEN }}
     - name: create file to push to new repo
       run: |
