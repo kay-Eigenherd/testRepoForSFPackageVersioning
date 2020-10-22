@@ -11,7 +11,7 @@ on:
         description: 'Id of the unlocked Package'
         default: '04t5I000001iufk'
         required: true
-#gh access key: 9ccb32fe6d041b2e2d0b25223f32acba5f9f6546
+#gh access key: 3293c5ab5aa54835443132d2bdd6c186a24fcb58
 jobs:
   job1:
     runs-on: ubuntu-latest
