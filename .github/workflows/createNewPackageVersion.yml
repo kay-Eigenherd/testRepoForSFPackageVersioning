@@ -64,16 +64,11 @@ jobs:
       #  run: sfdx force:org:delete --noprompt --targetusername ScratchOrg
         
       #experimental stuff
-      - name: Pushes test file
-        uses: dmnemec/copy_file_to_another_repo_action@v1.0.4
-        env:
-          API_TOKEN_GITHUB: ${{ secrets.KEJ_TOKEN }}
-        with:
-          source_file: 'README.md'
-          destination_repo: 'kay-Eigenherd/eghLibWebsite'
-          destination_folder: 'docs/testRepoForSFPackageVersioning'
-          user_email: 'daction@github.com'
-          user_name: 'GitHub Action'
+      - name: Install npm ApexDoc CLI
+        run: sudo npm install --global @cparra/apexdocs
+        
+      - name: Try generating docu
+        run: apexdocs-generate --sourceDir ./force-app/main/default/classes --targetGenerator docsify
         
       #- name: rearrange files to easily push #[ -d "/testRepoForSFPackageVersioning" ] && rm -r ./testRepoForSFPackageVersioning || mkdir ./testRepoForSFPackageVersioning
         #run: |
@@ -81,11 +76,16 @@ jobs:
           #cp ./README.md ./docs/testRepoForSFPackageVersioning
           #rm ./docs/README.md
           
-      #- name: Commit files
-        #run: |
-          #git config --local user.email "action@github.com"
-          #git config --local user.name "GitHub Action"
-          #git commit -m "Add docu testRepoForSFPackageVersioning" -a
+      - name: Pushes test file
+        uses: dmnemec/copy_file_to_another_repo_action@v1.0.4
+        env:
+          API_TOKEN_GITHUB: ${{ secrets.KEJ_TOKEN }}
+        with:
+          source_file: 'docs/Miscellaneous'
+          destination_repo: 'kay-Eigenherd/eghLibWebsite'
+          destination_folder: 'docs/testRepoForSFPackageVersioning'
+          user_email: 'daction@github.com'
+          user_name: 'GitHub Action'
           
       #- name: Push changes
         #uses: ad-m/github-push-action@master
