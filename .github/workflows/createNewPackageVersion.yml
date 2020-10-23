@@ -75,15 +75,16 @@ jobs:
           rm ./docs/README.md
           cp README.md ./docs/
           mv ./docs/Miscellaneous ./docs/Classes
+          mv ./docs ./testRepoForSFPackageVersioning
           
       - name: Pushes test file
         uses: dmnemec/copy_file_to_another_repo_action@v1.0.4
         env:
           API_TOKEN_GITHUB: ${{ secrets.KEJ_TOKEN }}
         with:
-          source_file: 'docs'
+          source_file: 'testRepoForSFPackageVersioning'
           destination_repo: 'kay-Eigenherd/eghLibWebsite'
-          destination_folder: 'docs/testRepoForSFPackageVersioning'
+          destination_folder: 'docs'
           user_email: 'daction@github.com'
           user_name: 'GitHub Action'
           
