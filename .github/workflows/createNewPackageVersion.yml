@@ -81,7 +81,7 @@ jobs:
           path: website
         
       - run: ls
-      - run: cd website/
+      - run: cd ${{ github.workspace }}/website/
       - run: ls
       - run: cd /docs
       - run: ls
