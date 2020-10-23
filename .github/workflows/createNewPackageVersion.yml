@@ -66,7 +66,7 @@ jobs:
         run: sudo npm install --global @cparra/apexdocs
         
       - name: Try generating docu
-        run: apexdocs-generate --sourceDir ./force-app/main/src/classes --targetGenerator docsify
+        run: apexdocs-generate --sourceDir ./force-app/main/default/classes --targetGenerator docsify
         
       - name: rearrange files to easily push
         run: |
