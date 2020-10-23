@@ -68,7 +68,7 @@ jobs:
         run: sudo npm install --global @cparra/apexdocs
         
       - name: Try generating docu
-        run: apexdocs-generate --sourceDir ./force-app/main/default/classes --targetGenerator docsify
+        run: apexdocs-generate --sourceDir ./force-app/main/default/classes --targetGenerator docsify --targetDir /tmp/
           
       - name: Checkout website repo
         uses: actions/checkout@v2
@@ -77,6 +77,8 @@ jobs:
           persist-credentials: false 
           fetch-depth: 0
     
+      - run: ls
+      - run: cd /tmp
       - run: ls
         
       #- name: rearrange files to easily push #[ -d "/testRepoForSFPackageVersioning" ] && rm -r ./testRepoForSFPackageVersioning || mkdir ./testRepoForSFPackageVersioning
