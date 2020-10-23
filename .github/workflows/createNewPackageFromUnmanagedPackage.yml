@@ -32,7 +32,7 @@ jobs:
         tar xJf sfdx-linux-amd64.tar.xz -C sfdx-cli --strip-components 1
         ./sfdx-cli/install
     - name: Install unzip
-      run: apt install unzip
+      run: sudo apt install unzip
     - name: Create local SFDX project
       run: sfdx force:project:create -n '${{ github.event.inputs.name }}' --template standard
     - name: Authenticate DevHub
