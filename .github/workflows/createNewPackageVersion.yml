@@ -70,8 +70,8 @@ jobs:
         
       - name: rearrange files to easily push
         run: |
-          mv ./docs/Miscellaneous ./docs/${{ secrets.PACKAGE_NAME }}
-          cp ./README.md ./docs/${{ secrets.PACKAGE_NAME }}
+          mv ./docs/Miscellaneous ./docs/${{ github.ref }}
+          cp ./README.md ./docs/${{ github.ref }}
           rm ./docs/README.md
           
       - name: Commit files
@@ -79,7 +79,7 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add ./docs/
-          git commit -m "Add docu ${{ secrets.PACKAGE_NAME }}"
+          git commit -m "Add docu ${{ github.ref }}"
           
       - name: Push changes
         uses: ad-m/github-push-action@master
