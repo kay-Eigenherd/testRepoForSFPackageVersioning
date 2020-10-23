@@ -33,7 +33,7 @@ jobs:
         ./sfdx-cli/install
     - name: Install unzip
       run: sudo apt install unzip
-    - name: Create local SFDX project
+    - name: Create local SFDX project #TODO check, wheather standard template is right
       run: sfdx force:project:create -n '${{ github.event.inputs.name }}' --template standard
     - name: Authenticate DevHub
       run: |
@@ -53,7 +53,7 @@ jobs:
       run: sfdx force:org:delete --noprompt --targetusername ScratchOrg
     - name: unzip metadata
       run: unzip ./metadataFolder/unpackaged.zip
-    - name: convert metadata
+    - name: convert metadata #TODO does not work yet, path in convert command makes problems
       run: |
         cd '${{ github.event.inputs.name }}'
         sfdx force:mdapi:convert --rootdir ../metadataFolder/'${{ github.event.inputs.name }}'
@@ -63,7 +63,7 @@ jobs:
       env:
         GITHUB_USER: 'kay-Eigenherd'
         GITHUB_TOKEN: ${{ secrets.KEJ_TOKEN }}
-    - name: Commit files
+    - name: Commit files #TODO only add required files, adjust folder structure to match eghLib guidelines
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
