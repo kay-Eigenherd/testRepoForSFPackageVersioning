@@ -45,7 +45,7 @@ jobs:
     - name: create ScratchOrg
       run: sfdx force:org:create --setdefaultusername --targetdevhubusername DevHub --wait 10 --durationdays 1 --setalias ScratchOrg edition=developer
     - name: Install Package from Id in ScratchOrg
-      run: sfdx force:package:install --wait 10 --publishwait 10 --package ${{ github.event.inputs.packageId }} -k ${{ secrets.PACKAGE_INSTALLATION_KEY }} -r -u ScratchOrg
+      run: sfdx force:package:install --wait 10 --publishwait 10 --package ${{ github.event.inputs.packageId }} -k '${{ github.event.inputs.packageInstallationKey }}' -r -u ScratchOrg
     - name: Run all Apex Tests
       run: sfdx force:apex:test:run --verbose --codecoverage --resultformat human --targetusername ScratchOrg
     - name: Pull metadata to local SFDX project
