@@ -70,18 +70,18 @@ jobs:
       - name: Try generating docu
         run: apexdocs-generate --sourceDir ./force-app/main/default/classes --targetGenerator docsify
         
-      #- name: rearrange files to easily push #[ -d "/testRepoForSFPackageVersioning" ] && rm -r ./testRepoForSFPackageVersioning || mkdir ./testRepoForSFPackageVersioning
-        #run: |
-          #mv ./docs/Miscellaneous ./docs/testRepoForSFPackageVersioning
-          #cp ./README.md ./docs/testRepoForSFPackageVersioning
-          #rm ./docs/README.md
+      - name: rearrange files to easily push 
+        run: |
+          rm ./docs/README.md
+          cp README.md ./docs/
+          mv .docs/Miscellaneous .docs/Classes
           
       - name: Pushes test file
         uses: dmnemec/copy_file_to_another_repo_action@v1.0.4
         env:
           API_TOKEN_GITHUB: ${{ secrets.KEJ_TOKEN }}
         with:
-          source_file: 'docs/Miscellaneous'
+          source_file: 'docs'
           destination_repo: 'kay-Eigenherd/eghLibWebsite'
           destination_folder: 'docs/testRepoForSFPackageVersioning'
           user_email: 'daction@github.com'
