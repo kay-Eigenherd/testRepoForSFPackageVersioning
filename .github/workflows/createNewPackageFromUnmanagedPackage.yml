@@ -25,17 +25,14 @@ jobs:
       with:
         persist-credentials: false 
         fetch-depth: 0 
-    - name: Create a new repo for the package
-      run: hub create '${{ github.event.inputs.name }}' --description 'This is a automatically generated repo' #'testOrganization/${{ github.event.inputs.name }}' for creating a organization repo
-      env:
-        GITHUB_USER: 'kay-Eigenherd'
-        GITHUB_TOKEN: ${{ secrets.KEJ_TOKEN }}
     - name: Install Salesforce CLI
       run: |
         wget https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz
         mkdir sfdx-cli
         tar xJf sfdx-linux-amd64.tar.xz -C sfdx-cli --strip-components 1
         ./sfdx-cli/install
+    - name: Install unzip
+      run: apt install unzip
     - name: Create local SFDX project
       run: sfdx force:project:create -n '${{ github.event.inputs.name }}' --template standard
     - name: Authenticate DevHub
@@ -54,11 +51,23 @@ jobs:
         sfdx force:mdapi:retrieve --targetusername ScratchOrg --retrievetargetdir ./metadataFolder --packagenames '${{ github.event.inputs.name }}'
     - name: delete ScratchOrg
       run: sfdx force:org:delete --noprompt --targetusername ScratchOrg
+    - name: unzip metadata
+      run: unzip ./metadataFolder/unpackaged.zip
+    - name: convert metadata
+      run: |
+        cd '${{ github.event.inputs.name }}'
+        sfdx force:mdapi:convert --rootdir ../metadataFolder/'${{ github.event.inputs.name }}'
+    #Git magic following
+    - name: Create a new repo for the package
+      run: hub create '${{ github.event.inputs.name }}' --description 'This is a automatically generated repo' #'testOrganization/${{ github.event.inputs.name }}' for creating a organization repo
+      env:
+        GITHUB_USER: 'kay-Eigenherd'
+        GITHUB_TOKEN: ${{ secrets.KEJ_TOKEN }}
     - name: Commit files
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git add .
+        git add -- ../'${{ github.event.inputs.name }}'
         git commit -m "Add changes"
     - name: Push changes
       uses: ad-m/github-push-action@master
