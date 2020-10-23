@@ -26,6 +26,7 @@ jobs:
           #mkdir sfdx-cli
           #tar xJf sfdx-linux-amd64.tar.xz -C sfdx-cli --strip-components 1
           #./sfdx-cli/install
+      - run: mkdir repoFolder && cd repoFolder
       - uses: actions/checkout@master
         with:
           persist-credentials: false 
@@ -64,11 +65,14 @@ jobs:
       #  run: sfdx force:org:delete --noprompt --targetusername ScratchOrg
         
       #experimental stuff
+      - run: |
+          mv README.md ../
+          cd ..
+          ls 
+          cd repoFolder
+      
       - name: Install npm ApexDoc CLI
         run: sudo npm install --global @cparra/apexdocs
-        
-      - name: Try generating docu
-        run: apexdocs-generate --sourceDir ./force-app/main/default/classes --targetGenerator docsify --targetDir /tmp/
           
       - name: Checkout website repo
         uses: actions/checkout@v2
@@ -76,6 +80,9 @@ jobs:
           repository: kay-Eigenherd/eghLibWebsite
           persist-credentials: false 
           fetch-depth: 0
+        
+      - name: Try generating docu
+        run: apexdocs-generate --sourceDir ./force-app/main/default/classes --targetGenerator docsify --targetDir /tmp/
     
       - run: ls
       - run: cd /tmp
