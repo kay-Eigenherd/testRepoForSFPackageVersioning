@@ -1,0 +1,61 @@
+name: Manual workflow to create unlocked package from unmanaged package Id
+
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: 'Repo/Package Name'
+        default: 'NewRepo'
+        required: true
+      packageId:
+        description: 'Id of the unlocked Package'
+        default: '04t5I000001iufk'
+        required: true
+
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@master
+      with:
+        persist-credentials: false 
+        fetch-depth: 0 
+    - name: Create a new repo for the package
+      run: hub create '${{ github.event.inputs.name }}' --description 'This is a automatically generated repo' #'testOrganization/${{ github.event.inputs.name }}' for creating a organization repo
+      env:
+        GITHUB_USER: 'kay-Eigenherd'
+        GITHUB_TOKEN: ${{ secrets.KEJ_TOKEN }}
+    - name: Install Salesforce CLI
+      run: |
+        wget https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz
+        mkdir sfdx-cli
+        tar xJf sfdx-linux-amd64.tar.xz -C sfdx-cli --strip-components 1
+        ./sfdx-cli/install
+    - name: Create local SFDX project
+      run: sfdx force:project:create -n '${{ github.event.inputs.name }}' --template standard
+    - name: Authenticate DevHub
+      run: |
+        echo ${{ secrets.ADDITIONAL_AUTH_URL }} > /tmp/sfdx.url
+        sfdx force:auth:sfdxurl:store --sfdxurlfile /tmp/sfdx.url --setalias DevHub --setdefaultdevhubusername
+    - name: create ScratchOrg
+      run: sfdx force:org:create --setdefaultusername --targetdevhubusername DevHub --wait 10 --durationdays 1 --setalias ScratchOrg edition=developer
+    - name: Install Package from Id in ScratchOrg
+      run: sfdx force:package:install --wait 10 --publishwait 10 --package ${{ github.event.inputs.packageId }} -k ${{ secrets.PACKAGE_INSTALLATION_KEY }} -r -u ScratchOrg
+    - name: Run all Apex Tests
+      run: sfdx force:apex:test:run --verbose --codecoverage --resultformat human --targetusername ScratchOrg
+    - name: Pull metadata to local SFDX project
+      run: sfdx force:source:pull --targetusername ScratchOrg
+    - name: delete ScratchOrg
+      run: sfdx force:org:delete --noprompt --targetusername ScratchOrg
+    - name: Commit files
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git commit -m "Add changes" -a
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.KEJ_TOKEN }}
+        branch: 'master'
+        repository: 'kay-Eigenherd/${{ github.event.inputs.name }}'
