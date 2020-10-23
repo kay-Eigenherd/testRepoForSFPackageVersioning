@@ -72,7 +72,7 @@ jobs:
         run: |
           cd ./docs/
           ls
-          mv ./docs/Miscellaneous ./docs/${{ github.ref }}
+          mv ./Miscellaneous ./${{ github.ref }}
           cp ./README.md ./docs/${{ github.ref }}
           rm ./docs/README.md
           
