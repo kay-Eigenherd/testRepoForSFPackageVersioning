@@ -74,7 +74,7 @@ jobs:
         run: |
           rm ./docs/README.md
           cp README.md ./docs/
-          mv .docs/Miscellaneous .docs/Classes
+          mv ./docs/Miscellaneous ./docs/Classes
           
       - name: Pushes test file
         uses: dmnemec/copy_file_to_another_repo_action@v1.0.4
