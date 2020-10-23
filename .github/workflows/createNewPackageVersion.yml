@@ -31,6 +31,7 @@ jobs:
           persist-credentials: false 
           fetch-depth: 0 
           path: main
+      #- run: cd main
       #- name: Authenticate DevHub
         #run: |
           #echo ${{ secrets.PLAYGROUND_AUTH_URL }} > /tmp/sfdx.url
@@ -79,10 +80,14 @@ jobs:
           fetch-depth: 0
           path: website
           
+      - name: Switch to website repo
+        run: cd ../website
+          
       - run: |
           ls
-          cd website
-          echo "---"
+          cd ./docs
+          [ -d "/testRepoForSFPackageVersioning" ] && rm -r ./testRepoForSFPackageVersioning || mkdir ./testRepoForSFPackageVersioning
+          cd ./testRepoForSFPackageVersioning
           ls
         
       #- name: rearrange files to easily push
@@ -91,17 +96,16 @@ jobs:
           #cp ./README.md ./docs/testRepoForSFPackageVersioning
           #rm ./docs/README.md
           
-      #- name: Commit files
-        #run: |
-          #git config --local user.email "action@github.com"
-          #git config --local user.name "GitHub Action"
-          #git add ./docs/
-          #git commit -m "Add docu testRepoForSFPackageVersioning"
+      - name: Commit files
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit -m "Add docu testRepoForSFPackageVersioning" -a
           
-      #- name: Push changes
-        #uses: ad-m/github-push-action@master
-        #with:
-          #github_token: ${{ secrets.KEJ_TOKEN }}
-          #branch: 'master'
-          #repository: 'kay-Eigenherd/eghLibAttempt'
-          #force: true
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.KEJ_TOKEN }}
+          branch: 'master'
+          repository: 'kay-Eigenherd/eghLibWebsite'
+          force: true
