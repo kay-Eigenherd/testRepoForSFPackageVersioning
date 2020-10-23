@@ -79,7 +79,8 @@ jobs:
           persist-credentials: false 
           fetch-depth: 0
           path: website
-          
+        
+      - run: ls
       - run: cd website/
       - run: ls
       - run: cd /docs
