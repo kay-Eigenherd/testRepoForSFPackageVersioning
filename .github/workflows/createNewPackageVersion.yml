@@ -80,12 +80,9 @@ jobs:
           fetch-depth: 0
           path: website
           
-      - name: Switch to website repo
-        run: cd ./website
-          
       - run: |
           ls
-          cd ./docs
+          cd ./website/docs
           [ -d "/testRepoForSFPackageVersioning" ] && rm -r ./testRepoForSFPackageVersioning || mkdir ./testRepoForSFPackageVersioning
           cd ./testRepoForSFPackageVersioning
           ls
