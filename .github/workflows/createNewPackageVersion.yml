@@ -84,10 +84,9 @@ jobs:
           cd website/
           ls
           cd /docs
-          [ -d "/testRepoForSFPackageVersioning" ] && rm -r ./testRepoForSFPackageVersioning || mkdir ./testRepoForSFPackageVersioning
           ls
         
-      #- name: rearrange files to easily push
+      #- name: rearrange files to easily push #[ -d "/testRepoForSFPackageVersioning" ] && rm -r ./testRepoForSFPackageVersioning || mkdir ./testRepoForSFPackageVersioning
         #run: |
           #mv ./docs/Miscellaneous ./docs/testRepoForSFPackageVersioning
           #cp ./README.md ./docs/testRepoForSFPackageVersioning
