@@ -79,7 +79,11 @@ jobs:
           fetch-depth: 0
           path: website
           
-      - run: ls
+      - run: |
+          ls
+          cd website
+          echo "---"
+          ls
         
       #- name: rearrange files to easily push
         #run: |
