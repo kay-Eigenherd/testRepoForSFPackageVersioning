@@ -81,10 +81,10 @@ jobs:
           path: website
           
       - run: |
+          cd website/
           ls
-          cd ./website/docs
+          cd /docs
           [ -d "/testRepoForSFPackageVersioning" ] && rm -r ./testRepoForSFPackageVersioning || mkdir ./testRepoForSFPackageVersioning
-          cd ./testRepoForSFPackageVersioning
           ls
         
       #- name: rearrange files to easily push
