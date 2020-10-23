@@ -64,11 +64,11 @@ jobs:
       #  run: sfdx force:org:delete --noprompt --targetusername ScratchOrg
         
       #experimental stuff
-      #- name: Install npm ApexDoc CLI
-        #run: sudo npm install --global @cparra/apexdocs
+      - name: Install npm ApexDoc CLI
+        run: sudo npm install --global @cparra/apexdocs
         
-      #- name: Try generating docu
-        #run: apexdocs-generate --sourceDir ./force-app/main/default/classes --targetGenerator docsify
+      - name: Try generating docu
+        run: apexdocs-generate --sourceDir ./force-app/main/default/classes --targetGenerator docsify
           
       - name: Checkout website repo
         uses: actions/checkout@v2
@@ -78,10 +78,6 @@ jobs:
           fetch-depth: 0
     
       - run: ls
-      - run: cd /website
-      - run: ls
-      - run: cd /docs
-      - run: ls
         
       #- name: rearrange files to easily push #[ -d "/testRepoForSFPackageVersioning" ] && rm -r ./testRepoForSFPackageVersioning || mkdir ./testRepoForSFPackageVersioning
         #run: |
@@ -89,16 +85,16 @@ jobs:
           #cp ./README.md ./docs/testRepoForSFPackageVersioning
           #rm ./docs/README.md
           
-      - name: Commit files
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git commit -m "Add docu testRepoForSFPackageVersioning" -a
+      #- name: Commit files
+        #run: |
+          #git config --local user.email "action@github.com"
+          #git config --local user.name "GitHub Action"
+          #git commit -m "Add docu testRepoForSFPackageVersioning" -a
           
-      - name: Push changes
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.KEJ_TOKEN }}
-          branch: 'master'
-          repository: 'kay-Eigenherd/eghLibWebsite'
-          force: true
+      #- name: Push changes
+        #uses: ad-m/github-push-action@master
+        #with:
+          #github_token: ${{ secrets.KEJ_TOKEN }}
+          #branch: 'master'
+          #repository: 'kay-Eigenherd/eghLibWebsite'
+          #force: true
