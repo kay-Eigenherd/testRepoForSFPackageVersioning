@@ -81,7 +81,7 @@ jobs:
           path: website
           
       - name: Switch to website repo
-        run: cd ../website
+        run: cd ./website
           
       - run: |
           ls
