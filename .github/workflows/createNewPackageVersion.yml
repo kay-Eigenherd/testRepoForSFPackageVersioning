@@ -30,8 +30,6 @@ jobs:
         with:
           persist-credentials: false 
           fetch-depth: 0 
-          path: main
-      #- run: cd main
       #- name: Authenticate DevHub
         #run: |
           #echo ${{ secrets.PLAYGROUND_AUTH_URL }} > /tmp/sfdx.url
@@ -78,10 +76,7 @@ jobs:
           repository: kay-Eigenherd/eghLibWebsite
           persist-credentials: false 
           fetch-depth: 0
-          path: website
-        
-      - run: ls
-      - run: cd ${{ github.workspace }}/website/
+    
       - run: ls
       - run: cd /website
       - run: ls
