@@ -11,6 +11,10 @@ on:
         description: 'Id of the unlocked Package'
         default: '04t5I000001iufk'
         required: true
+      packageInstallationKey:
+        description: '(optional) Intstallation key of the unlocked Package'
+        default: ''
+        required: false
 
 jobs:
   job1:
@@ -45,7 +49,9 @@ jobs:
     - name: Run all Apex Tests
       run: sfdx force:apex:test:run --verbose --codecoverage --resultformat human --targetusername ScratchOrg
     - name: Pull metadata to local SFDX project
-      run: sfdx force:source:pull --targetusername ScratchOrg
+      run: |
+        mkdir metadataFolder
+        sfdx force:mdapi:retrieve --targetusername ScratchOrg --retrievetargetdir ./metadataFolder --packagenames '${{ github.event.inputs.name }}'
     - name: delete ScratchOrg
       run: sfdx force:org:delete --noprompt --targetusername ScratchOrg
     - name: Commit files
