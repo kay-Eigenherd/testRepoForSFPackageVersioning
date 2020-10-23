@@ -72,8 +72,8 @@ jobs:
         run: |
           cd ./docs/
           ls
-          mv ./Miscellaneous ./${{ github.ref }}
-          cp ./README.md ./docs/${{ github.ref }}
+          mv ./Miscellaneous ./testRepoForSFPackageVersioning
+          cp ./README.md ./docs/testRepoForSFPackageVersioning
           rm ./docs/README.md
           
       - name: Commit files
@@ -81,7 +81,7 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add ./docs/
-          git commit -m "Add docu ${{ github.ref }}"
+          git commit -m "Add docu testRepoForSFPackageVersioning"
           
       - name: Push changes
         uses: ad-m/github-push-action@master
