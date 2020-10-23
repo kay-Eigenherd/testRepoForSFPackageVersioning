@@ -80,11 +80,10 @@ jobs:
           fetch-depth: 0
           path: website
           
-      - run: |
-          cd website/
-          ls
-          cd /docs
-          ls
+      - run: cd website/
+      - run: ls
+      - run: cd /docs
+      - run: ls
         
       #- name: rearrange files to easily push #[ -d "/testRepoForSFPackageVersioning" ] && rm -r ./testRepoForSFPackageVersioning || mkdir ./testRepoForSFPackageVersioning
         #run: |
