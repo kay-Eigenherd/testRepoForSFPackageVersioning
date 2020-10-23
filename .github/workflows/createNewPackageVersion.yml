@@ -19,51 +19,51 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      #- name: Install Salesforce CLI
-        #run: |
-          #apt update && apt -y install jq
-          #wget https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz
-          #mkdir sfdx-cli
-          #tar xJf sfdx-linux-amd64.tar.xz -C sfdx-cli --strip-components 1
-          #./sfdx-cli/install
+      - name: Install Salesforce CLI
+        run: |
+          apt update && apt -y install jq
+          wget https://developer.salesforce.com/media/salesforce-cli/sfdx-linux-amd64.tar.xz
+          mkdir sfdx-cli
+          tar xJf sfdx-linux-amd64.tar.xz -C sfdx-cli --strip-components 1
+          ./sfdx-cli/install
       - uses: actions/checkout@master
         with:
           persist-credentials: false 
           fetch-depth: 0 
-      #- name: Authenticate DevHub
-        #run: |
-          #echo ${{ secrets.PLAYGROUND_AUTH_URL }} > /tmp/sfdx.url
-          #sfdx force:auth:sfdxurl:store --sfdxurlfile /tmp/sfdx.url --setalias DevHub --setdefaultdevhubusername
-      #- name: create ScratchOrg
-        #run: sfdx force:org:create --setdefaultusername --targetdevhubusername DevHub --wait 10 --durationdays 1 --setalias ScratchOrg edition=developer
-      #- name: 'Push source to ScratchOrg'
-        #run: sfdx force:source:push --targetusername ScratchOrg
-      #- name: 'Run all tests in ScratchOrg'
-        #run: sfdx force:apex:test:run --verbose --codecoverage --resultformat human --targetusername ScratchOrg
-      #- name: Create new Package Version
-        #run: sfdx force:package:version:create --package "${{ secrets.PACKAGE_NAME }}" --installationkey "${{ secrets.PACKAGE_INSTALLATION_KEY }}" --targetdevhubusername DevHub --wait 10 --json
-      #- name: 'Run all tests in ScratchOrg'
-        #run: sfdx force:apex:test:run --verbose --codecoverage --resultformat human --targetusername ScratchOrg
+      - name: Authenticate DevHub
+        run: |
+          echo ${{ secrets.PLAYGROUND_AUTH_URL }} > /tmp/sfdx.url
+          sfdx force:auth:sfdxurl:store --sfdxurlfile /tmp/sfdx.url --setalias DevHub --setdefaultdevhubusername
+      - name: create ScratchOrg
+        run: sfdx force:org:create --setdefaultusername --targetdevhubusername DevHub --wait 10 --durationdays 1 --setalias ScratchOrg edition=developer
+      - name: 'Push source to ScratchOrg'
+        run: sfdx force:source:push --targetusername ScratchOrg
+      - name: 'Run all tests in ScratchOrg'
+        run: sfdx force:apex:test:run --verbose --codecoverage --resultformat human --targetusername ScratchOrg
+      - name: Create new Package Version
+        run: sfdx force:package:version:create --package "${{ secrets.PACKAGE_NAME }}" --installationkey "${{ secrets.PACKAGE_INSTALLATION_KEY }}" --targetdevhubusername DevHub --wait 10 --json
+      - name: 'Run all tests in ScratchOrg'
+        run: sfdx force:apex:test:run --verbose --codecoverage --resultformat human --targetusername ScratchOrg
       
       #TODO update Readme with new IDs to install
       
       #Git push changes
-      #- run: |
-          #git config --local user.email "action@github.com"
-          #git config --local user.name "GitHub Action"
-          #git add .
-          #git commit -m "generated"
-      #- name: Push changes
-        #uses: ad-m/github-push-action@master
-        #with:
-          #github_token: ${{ secrets.GITHUB_TOKEN }} #GitHub Action issued token
-          #branch: ${{ github.ref }}
+      - run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -m "generated"
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }} #GitHub Action issued token
+          branch: ${{ github.ref }}
           
       #CleanUp, delete ScratchOrg
-      #- name: 'Delete ScratchOrg'
-      #  run: sfdx force:org:delete --noprompt --targetusername ScratchOrg
+      - name: 'Delete ScratchOrg'
+        run: sfdx force:org:delete --noprompt --targetusername ScratchOrg
         
-      #experimental stuff
+      #send documentation to website repo
       - name: Install npm ApexDoc CLI
         run: sudo npm install --global @cparra/apexdocs
         
@@ -87,11 +87,3 @@ jobs:
           destination_folder: 'docs'
           user_email: 'daction@github.com'
           user_name: 'GitHub Action'
-          
-      #- name: Push changes
-        #uses: ad-m/github-push-action@master
-        #with:
-          #github_token: ${{ secrets.KEJ_TOKEN }}
-          #branch: 'master'
-          #repository: 'kay-Eigenherd/eghLibWebsite'
-          #force: true
