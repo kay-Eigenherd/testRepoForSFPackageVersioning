@@ -30,6 +30,7 @@ jobs:
         with:
           persist-credentials: false 
           fetch-depth: 0 
+          path: main
       #- name: Authenticate DevHub
         #run: |
           #echo ${{ secrets.PLAYGROUND_AUTH_URL }} > /tmp/sfdx.url
@@ -42,6 +43,8 @@ jobs:
         #run: sfdx force:apex:test:run --verbose --codecoverage --resultformat human --targetusername ScratchOrg
       #- name: Create new Package Version
         #run: sfdx force:package:version:create --package "${{ secrets.PACKAGE_NAME }}" --installationkey "${{ secrets.PACKAGE_INSTALLATION_KEY }}" --targetdevhubusername DevHub --wait 10 --json
+      #- name: 'Run all tests in ScratchOrg'
+        #run: sfdx force:apex:test:run --verbose --codecoverage --resultformat human --targetusername ScratchOrg
       
       #TODO update Readme with new IDs to install
       
@@ -62,29 +65,39 @@ jobs:
       #  run: sfdx force:org:delete --noprompt --targetusername ScratchOrg
         
       #experimental stuff
-      - name: Install npm ApexDoc CLI
-        run: sudo npm install --global @cparra/apexdocs
+      #- name: Install npm ApexDoc CLI
+        #run: sudo npm install --global @cparra/apexdocs
         
-      - name: Try generating docu
-        run: apexdocs-generate --sourceDir ./force-app/main/default/classes --targetGenerator docsify
-        
-      - name: rearrange files to easily push
-        run: |
-          mv ./docs/Miscellaneous ./docs/testRepoForSFPackageVersioning
-          cp ./README.md ./docs/testRepoForSFPackageVersioning
-          rm ./docs/README.md
+      #- name: Try generating docu
+        #run: apexdocs-generate --sourceDir ./force-app/main/default/classes --targetGenerator docsify
           
-      - name: Commit files
-        run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add ./docs/
-          git commit -m "Add docu testRepoForSFPackageVersioning"
-          
-      - name: Push changes
-        uses: ad-m/github-push-action@master
+      - name: Checkout website repo
+        uses: actions/checkout@v2
         with:
-          github_token: ${{ secrets.KEJ_TOKEN }}
-          branch: 'master'
-          repository: 'kay-Eigenherd/eghLibAttempt'
-          force: true
+          repository: kay-Eigenherd/eghLibWebsite
+          persist-credentials: false 
+          fetch-depth: 0
+          path: website
+          
+      - run: ls
+        
+      #- name: rearrange files to easily push
+        #run: |
+          #mv ./docs/Miscellaneous ./docs/testRepoForSFPackageVersioning
+          #cp ./README.md ./docs/testRepoForSFPackageVersioning
+          #rm ./docs/README.md
+          
+      #- name: Commit files
+        #run: |
+          #git config --local user.email "action@github.com"
+          #git config --local user.name "GitHub Action"
+          #git add ./docs/
+          #git commit -m "Add docu testRepoForSFPackageVersioning"
+          
+      #- name: Push changes
+        #uses: ad-m/github-push-action@master
+        #with:
+          #github_token: ${{ secrets.KEJ_TOKEN }}
+          #branch: 'master'
+          #repository: 'kay-Eigenherd/eghLibAttempt'
+          #force: true
