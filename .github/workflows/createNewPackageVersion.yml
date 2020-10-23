@@ -70,9 +70,7 @@ jobs:
         
       - name: rearrange files to easily push
         run: |
-          cd ./docs/
-          ls
-          mv ./Miscellaneous ./testRepoForSFPackageVersioning
+          mv ./docs/Miscellaneous ./docs/testRepoForSFPackageVersioning
           cp ./README.md ./docs/testRepoForSFPackageVersioning
           rm ./docs/README.md
           
